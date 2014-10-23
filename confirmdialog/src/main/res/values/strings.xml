@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Confirm Dialog</string>
+    <string name="default_confirm">Ok</string>
+    <string name="default_cancel">Cancel</string>
+</resources>
