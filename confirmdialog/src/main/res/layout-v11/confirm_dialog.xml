@@ -25,11 +25,11 @@
         <FrameLayout
             android:id="@+id/alert_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="30dp">
+            android:layout_height="wrap_content">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="30dp">
 
                 <TextView
                     android:id="@+id/confirm_text"

@@ -26,6 +26,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
+/**
+ * Confirm dialog can be used on events that requires User confirmation.
+ */
 public class ConfirmDialog {
   private static final String TAG = ConfirmDialog.class.getSimpleName();
 
@@ -100,7 +103,7 @@ public class ConfirmDialog {
     this.dialogContentContainer.setVisibility(View.GONE);
   }
 
-  public void injectListeners() {
+  private void injectListeners() {
     // set button listeners.
     this.btnConfirm.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -130,6 +133,9 @@ public class ConfirmDialog {
     });
   }
 
+  /**
+   * To render the ConfirmDialog with the default slide Animation.
+   */
   public void show() {
     LayoutInflater inflater = activity.getLayoutInflater();
     dialogView = (ViewGroup) inflater.inflate(R.layout.confirm_dialog, null);
@@ -157,6 +163,9 @@ public class ConfirmDialog {
     renderDialogContent();
   }
 
+  /**
+   * Builder that helps to construct the ConfirmDialog window.
+   */
   public static class Builder {
     private View contentView;
     private DialogEventListener eventListener;
@@ -169,39 +178,83 @@ public class ConfirmDialog {
       this.activity = activity;
     }
 
+    /**
+     * To set the custom view as the main content of the ConfirmDialog.
+     * @param view will be used as the main content of the dialog.
+     * @return Builder instance for chaining
+     */
     public Builder setContentView(View view) {
       this.contentView = view;
       return this;
     }
 
+    /**
+     * To use the content text as the confirm dialog content.
+     * @param contentText string will be used as the content of the dialog.
+     * @return Builder instance for chaining
+     */
     public Builder setContextText(String contentText) {
       this.contentText = contentText;
       return this;
     }
 
+    /**
+     * To listen to the ConfirmDialog events.
+     * @param eventListener will be invoked on ConfirmDialog events.
+     * @return Builder instance for chaining
+     */
     public Builder setEventListener(DialogEventListener eventListener) {
       this.eventListener = eventListener;
       return this;
     }
 
+    /**
+     * To rename the confirm button of the ConfirmDialog.
+     * @param btnText name of the confirm button.
+     * @return Builder instance for chaining.
+     */
     public Builder setConfirmBtnText(String btnText) {
       this.confirmBtnText = btnText;
       return this;
     }
 
+    /**
+     * To rename the default cancel button of the ConfirmDialog.
+     * @param btnText name of the cancel button.
+     * @return Builder instance for chaining.
+     */
     public Builder setCancelBtnText(String btnText) {
       this.cancelBtnText = btnText;
       return this;
     }
 
+    /**
+     * To create the ConfirmDialog instance using the current instance of Builder configuration.
+     * @return the created ConfirmDialog.
+     */
     public ConfirmDialog create() {
       return ConfirmDialog.build(this);
     }
   }
 
+  /**
+   * Event listener for ConfirmDialog.
+   */
   public interface DialogEventListener {
+    /**
+     * invoked on confirm action of ConfirmDialog.
+     */
     void onConfirm();
+
+    /**
+     * invoked on cancel action of ConfirmDialog.
+     */
     void onCancel();
+
+    /**
+     * invoked on dismiss event of ConfirmDialog.
+     * Will not invoked if ConfirmDialog is dismissed on dialog button actions.
+     */
     void onDismiss();
   }
 
