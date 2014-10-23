@@ -3,6 +3,8 @@ confirmdialog
 
 A custom animated Android confirm dialog
 
+![Confirm Dialog GIF](https://github.com/vignesh-iopex/confirmdialog/blob/master/demo.gif)
+
 Download
 --------
 
