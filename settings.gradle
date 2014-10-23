@@ -1,1 +1,1 @@
-include ':confirmdialog'
+include ':confirmdialog', ':confirmdialog-sample'

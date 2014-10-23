@@ -17,17 +17,33 @@
 package com.github.vignesh_iopex.confirmdialog;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class ConfirmDialog {
   private static final String TAG = ConfirmDialog.class.getSimpleName();
 
   private Activity activity;
-  private View.OnClickListener positiveListener;
-  private View.OnClickListener negativeListener;
+  private DialogEventListener dialogEventListener;
   private View contentView;
+  private String contentText;
+
+  // Views on confirm dialog.
+  private ViewGroup dialogView;
+  private ViewGroup dialogContent;
+  private ViewGroup dialogContentContainer;
+  private ViewGroup dialogOverlay;
+  private TextView contentTextView;
+  private Button btnConfirm;
+  private Button btnCancel;
+  private String confirmBtnText;
+  private String cancelBtnText;
 
   private ConfirmDialog(Activity activity) {
     this.activity = activity;
@@ -35,29 +51,119 @@ public class ConfirmDialog {
 
   private static ConfirmDialog build(Builder builder) {
     ConfirmDialog dialog = new ConfirmDialog(builder.activity);
-    dialog.positiveListener = builder.positiveListener;
-    dialog.negativeListener = builder.negativeListener;
     dialog.contentView = builder.contentView;
+    dialog.contentText = builder.contentText;
+    dialog.dialogEventListener = builder.eventListener;
+    dialog.confirmBtnText = builder.confirmBtnText;
+    dialog.cancelBtnText = builder.cancelBtnText;
     return dialog;
+  }
+
+  /**
+   * set #dialogView before calling injectViews.
+   */
+  private void injectViews() {
+    this.dialogContent = (ViewGroup) dialogView.findViewById(R.id.alert_content);
+    this.dialogContentContainer = (ViewGroup) dialogView.findViewById(R.id.alert_container);
+    this.dialogOverlay = (ViewGroup) dialogView.findViewById(R.id.confirm_overlay);
+    this.contentTextView = (TextView) dialogView.findViewById(R.id.confirm_text);
+    this.btnConfirm = (Button) dialogView.findViewById(R.id.btn_confirm);
+    this.btnCancel = (Button) dialogView.findViewById(R.id.btn_cancel);
+    this.dialogContent.setOnClickListener(null);
+  }
+
+  private void renderDialogContent() {
+    Animation animation = AnimationUtils.loadAnimation(activity, R.anim.slide_from_bottom);
+    this.dialogContentContainer.setVisibility(View.VISIBLE);
+    this.dialogContentContainer.startAnimation(animation);
+  }
+
+  private void dismissDialogContent() {
+    Animation animation = AnimationUtils.loadAnimation(activity, R.anim.slide_to_bottom);
+    animation.setAnimationListener(new Animation.AnimationListener() {
+      @Override
+      public void onAnimationStart(Animation animation) {
+
+      }
+
+      @Override
+      public void onAnimationEnd(Animation animation) {
+        ((ViewGroup) dialogView.getParent()).removeView(dialogView);
+      }
+
+      @Override
+      public void onAnimationRepeat(Animation animation) {
+
+      }
+    });
+    this.dialogContentContainer.startAnimation(animation);
+    this.dialogContentContainer.setVisibility(View.GONE);
+  }
+
+  public void injectListeners() {
+    // set button listeners.
+    this.btnConfirm.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (dialogEventListener != null)
+          dialogEventListener.onConfirm();
+        dismissDialogContent();
+      }
+    });
+
+    this.dialogOverlay.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (dialogEventListener != null)
+          dialogEventListener.onDismiss();
+        dismissDialogContent();
+      }
+    });
+
+    this.btnCancel.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (dialogEventListener != null)
+          dialogEventListener.onCancel();
+        dismissDialogContent();
+      }
+    });
   }
 
   public void show() {
     LayoutInflater inflater = activity.getLayoutInflater();
-    View dialogView = inflater.inflate(R.layout.confirm_dialog, null);
+    dialogView = (ViewGroup) inflater.inflate(R.layout.confirm_dialog, null);
+    injectViews();
+    injectListeners();
 
-    ViewGroup dialogContent = (ViewGroup) dialogView.findViewById(R.id.alert_content);
-    dialogContent.removeAllViews();
-    dialogContent.addView(contentView);
+    if (contentView != null) {
+      dialogContent.removeAllViews();
+      dialogContent.addView(contentView);
+    } else if (!TextUtils.isEmpty(contentText)) {
+      contentTextView.setText(contentText);
+    }
+
+    // populate views
+    if (!TextUtils.isEmpty(confirmBtnText)) {
+      btnConfirm.setText(confirmBtnText);
+    }
+
+    if (!TextUtils.isEmpty(cancelBtnText)) {
+      btnCancel.setText(cancelBtnText);
+    }
 
     ViewGroup parent = (ViewGroup) activity.findViewById(android.R.id.content);
     parent.addView(dialogView);
+    renderDialogContent();
   }
 
   public static class Builder {
     private View contentView;
-    private View.OnClickListener positiveListener;
-    private View.OnClickListener negativeListener;
+    private DialogEventListener eventListener;
     private Activity activity;
+    private String contentText;
+    private String confirmBtnText;
+    private String cancelBtnText;
 
     public Builder(Activity activity) {
       this.activity = activity;
@@ -68,19 +174,35 @@ public class ConfirmDialog {
       return this;
     }
 
-    public Builder setPositiveListener(View.OnClickListener listener) {
-      this.positiveListener = listener;
-      return  this;
-    }
-
-    public Builder setNegativeListener(View.OnClickListener listener) {
-      this.negativeListener = listener;
+    public Builder setContextText(String contentText) {
+      this.contentText = contentText;
       return this;
     }
 
-    public ConfirmDialog build() {
+    public Builder setEventListener(DialogEventListener eventListener) {
+      this.eventListener = eventListener;
+      return this;
+    }
+
+    public Builder setConfirmBtnText(String btnText) {
+      this.confirmBtnText = btnText;
+      return this;
+    }
+
+    public Builder setCancelBtnText(String btnText) {
+      this.cancelBtnText = btnText;
+      return this;
+    }
+
+    public ConfirmDialog create() {
       return ConfirmDialog.build(this);
     }
+  }
+
+  public interface DialogEventListener {
+    void onConfirm();
+    void onCancel();
+    void onDismiss();
   }
 
 }
