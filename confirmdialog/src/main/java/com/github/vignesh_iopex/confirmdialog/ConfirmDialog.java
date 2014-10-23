@@ -153,7 +153,6 @@ public class ConfirmDialog {
     if (!TextUtils.isEmpty(confirmBtnText)) {
       btnConfirm.setText(confirmBtnText);
     }
-
     if (!TextUtils.isEmpty(cancelBtnText)) {
       btnCancel.setText(cancelBtnText);
     }

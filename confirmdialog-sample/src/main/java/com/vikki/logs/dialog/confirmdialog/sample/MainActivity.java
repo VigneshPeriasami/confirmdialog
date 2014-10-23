@@ -66,7 +66,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     switch (v.getId()) {
       case R.id.btn_show_dialog:
         ConfirmDialog.Builder builder = new ConfirmDialog.Builder(this);
-        builder.setContextText("Action creates a dummy Confirmation dialog")
+        builder.setContextText("Can you see confirmation dialog?")
             .setEventListener(new ConfirmDialog.DialogEventListener() {
               @Override
               public void onConfirm() {
@@ -82,7 +82,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
               public void onDismiss() {
                 Toast.makeText(MainActivity.this, "Dismissed", Toast.LENGTH_SHORT).show();
               }
-            }).create().show();
+            }).setConfirmBtnText("Yes").setCancelBtnText("No").create().show();
         break;
       default:
         // do nothing.
