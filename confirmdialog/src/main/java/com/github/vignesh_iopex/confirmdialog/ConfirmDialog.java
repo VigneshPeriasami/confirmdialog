@@ -21,26 +21,23 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
 /**
  * Confirm dialog can be used on events that requires User confirmation.
  */
-public class ConfirmDialog {
-  private static final String TAG = ConfirmDialog.class.getSimpleName();
+public final class ConfirmDialog extends DialogFragment implements DialogEventListener {
+  public final static int POSITIVE_BUTTON = 1;
+  public final static int NEGATIVE_BUTTON = -1;
 
-  private Activity activity;
-  private DialogEventListener dialogEventListener;
+  private OnDismissListener onDialogDismissListener;
   private View contentView;
   private String contentText;
 
   // Views on confirm dialog.
-  private ViewGroup dialogView;
+  private ViewGroup dialogHolderView;
   private ViewGroup dialogContent;
-  private ViewGroup dialogContentContainer;
   private ViewGroup dialogOverlay;
   private TextView contentTextView;
   private Button btnConfirm;
@@ -48,68 +45,44 @@ public class ConfirmDialog {
   private String confirmBtnText;
   private String cancelBtnText;
 
-  private ConfirmDialog(Activity activity) {
-    this.activity = activity;
-  }
+  private OnClickListener onConfirmClickListener;
+  private OnClickListener onCancelClickListener;
 
   private static ConfirmDialog build(Builder builder) {
-    ConfirmDialog dialog = new ConfirmDialog(builder.activity);
+    ConfirmDialog dialog = new ConfirmDialog();
+    dialog.activity = builder.activity;
     dialog.contentView = builder.contentView;
     dialog.contentText = builder.contentText;
-    dialog.dialogEventListener = builder.eventListener;
+    dialog.onDialogDismissListener = builder.onDismissListener;
+    dialog.onConfirmClickListener = builder.confirmBtnClickListener;
+    dialog.onCancelClickListener = builder.cancelBtnClickListener;
     dialog.confirmBtnText = builder.confirmBtnText;
     dialog.cancelBtnText = builder.cancelBtnText;
     return dialog;
   }
 
-  /**
-   * set #dialogView before calling injectViews.
-   */
-  private void injectViews() {
-    this.dialogContent = (ViewGroup) dialogView.findViewById(R.id.alert_content);
-    this.dialogContentContainer = (ViewGroup) dialogView.findViewById(R.id.alert_container);
-    this.dialogOverlay = (ViewGroup) dialogView.findViewById(R.id.confirm_overlay);
-    this.contentTextView = (TextView) dialogView.findViewById(R.id.confirm_text);
-    this.btnConfirm = (Button) dialogView.findViewById(R.id.btn_confirm);
-    this.btnCancel = (Button) dialogView.findViewById(R.id.btn_cancel);
+  protected void injectViews(View view) {
+    this.dialogContent = (ViewGroup) view.findViewById(R.id.alert_content);
+    this.contentTextView = (TextView) view.findViewById(R.id.confirm_text);
+    this.btnConfirm = (Button) view.findViewById(R.id.btn_confirm);
+    this.btnCancel = (Button) view.findViewById(R.id.btn_cancel);
     this.dialogContent.setOnClickListener(null);
   }
 
-  private void renderDialogContent() {
-    Animation animation = AnimationUtils.loadAnimation(activity, R.anim.slide_from_bottom);
-    this.dialogContentContainer.setVisibility(View.VISIBLE);
-    this.dialogContentContainer.startAnimation(animation);
+  @Override
+  public void onDestroyView() {
+    ViewGroup parent = (ViewGroup) activity.findViewById(android.R.id.content);
+    parent.removeView(dialogHolderView);
+    super.onDestroyView();
   }
 
-  private void dismissDialogContent() {
-    Animation animation = AnimationUtils.loadAnimation(activity, R.anim.slide_to_bottom);
-    animation.setAnimationListener(new Animation.AnimationListener() {
-      @Override
-      public void onAnimationStart(Animation animation) {
-
-      }
-
-      @Override
-      public void onAnimationEnd(Animation animation) {
-        ((ViewGroup) dialogView.getParent()).removeView(dialogView);
-      }
-
-      @Override
-      public void onAnimationRepeat(Animation animation) {
-
-      }
-    });
-    this.dialogContentContainer.startAnimation(animation);
-    this.dialogContentContainer.setVisibility(View.GONE);
-  }
-
-  private void injectListeners() {
+  protected void injectListeners() {
     // set button listeners.
     this.btnConfirm.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (dialogEventListener != null)
-          dialogEventListener.onConfirm();
+        if (onConfirmClickListener != null)
+          onConfirmClickListener.onClick(ConfirmDialog.this, POSITIVE_BUTTON);
         dismissDialogContent();
       }
     });
@@ -117,8 +90,8 @@ public class ConfirmDialog {
     this.dialogOverlay.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (dialogEventListener != null)
-          dialogEventListener.onDismiss();
+        if (onDialogDismissListener != null)
+          onDialogDismissListener.onDismiss(ConfirmDialog.this);
         dismissDialogContent();
       }
     });
@@ -126,22 +99,15 @@ public class ConfirmDialog {
     this.btnCancel.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (dialogEventListener != null)
-          dialogEventListener.onCancel();
+        if (onCancelClickListener != null)
+          onCancelClickListener.onClick(ConfirmDialog.this, NEGATIVE_BUTTON);
         dismissDialogContent();
       }
     });
   }
 
-  /**
-   * To render the ConfirmDialog with the default slide Animation.
-   */
-  public void show() {
-    LayoutInflater inflater = activity.getLayoutInflater();
-    dialogView = (ViewGroup) inflater.inflate(R.layout.confirm_dialog, null);
-    injectViews();
-    injectListeners();
-
+  @Override
+  protected void constructViewElements() {
     if (contentView != null) {
       dialogContent.removeAllViews();
       dialogContent.addView(contentView);
@@ -152,14 +118,31 @@ public class ConfirmDialog {
     // populate views
     if (!TextUtils.isEmpty(confirmBtnText)) {
       btnConfirm.setText(confirmBtnText);
+    } else {
+      btnConfirm.setVisibility(View.GONE);
     }
     if (!TextUtils.isEmpty(cancelBtnText)) {
       btnCancel.setText(cancelBtnText);
+    } else {
+      btnCancel.setVisibility(View.GONE);
     }
+  }
 
+  @Override
+  public void show() {
+    LayoutInflater inflater = activity.getLayoutInflater();
+    dialogHolderView = (ViewGroup) inflater.inflate(R.layout.confirm_overlay, null);
+    this.dialogOverlay = (ViewGroup) dialogHolderView.findViewById(R.id.confirm_overlay);
+    this.dialogContentContainer = dialogHolderView.findViewById(R.id.dialog_content_holder);
     ViewGroup parent = (ViewGroup) activity.findViewById(android.R.id.content);
-    parent.addView(dialogView);
-    renderDialogContent();
+    parent.addView(dialogHolderView);
+
+    renderDialogContent(R.id.dialog_content_holder);
+  }
+
+  @Override
+  protected int getDialogViewId() {
+    return R.layout.dialog_fragment;
   }
 
   /**
@@ -167,11 +150,13 @@ public class ConfirmDialog {
    */
   public static class Builder {
     private View contentView;
-    private DialogEventListener eventListener;
+    private OnDismissListener onDismissListener;
     private Activity activity;
     private String contentText;
     private String confirmBtnText;
+    private OnClickListener confirmBtnClickListener;
     private String cancelBtnText;
+    private OnClickListener cancelBtnClickListener;
 
     public Builder(Activity activity) {
       this.activity = activity;
@@ -198,32 +183,36 @@ public class ConfirmDialog {
     }
 
     /**
-     * To listen to the ConfirmDialog events.
-     * @param eventListener will be invoked on ConfirmDialog events.
+     * To listen to the ConfirmDialog dismiss/cancel event.
+     * @param onDismissListener will be invoked on ConfirmDialog dismiss event.
      * @return Builder instance for chaining
      */
-    public Builder setEventListener(DialogEventListener eventListener) {
-      this.eventListener = eventListener;
+    public Builder setOnDismissListener(OnDismissListener onDismissListener) {
+      this.onDismissListener = onDismissListener;
       return this;
     }
 
     /**
-     * To rename the confirm button of the ConfirmDialog.
+     * To set the confirm button name and event listener for the ConfirmDialog.
      * @param btnText name of the confirm button.
+     * @param onConfirmListener to be invoked on confirm click.
      * @return Builder instance for chaining.
      */
-    public Builder setConfirmBtnText(String btnText) {
+    public Builder setConfirmButton(String btnText, OnClickListener onConfirmListener) {
       this.confirmBtnText = btnText;
+      this.confirmBtnClickListener = onConfirmListener;
       return this;
     }
 
     /**
      * To rename the default cancel button of the ConfirmDialog.
      * @param btnText name of the cancel button.
+     * @param onCancelListener to be invoked on negative click.
      * @return Builder instance for chaining.
      */
-    public Builder setCancelBtnText(String btnText) {
+    public Builder setCancelButton(String btnText, OnClickListener onCancelListener) {
       this.cancelBtnText = btnText;
+      this.cancelBtnClickListener = onCancelListener;
       return this;
     }
 
@@ -234,27 +223,6 @@ public class ConfirmDialog {
     public ConfirmDialog create() {
       return ConfirmDialog.build(this);
     }
-  }
-
-  /**
-   * Event listener for ConfirmDialog.
-   */
-  public interface DialogEventListener {
-    /**
-     * invoked on confirm action of ConfirmDialog.
-     */
-    void onConfirm();
-
-    /**
-     * invoked on cancel action of ConfirmDialog.
-     */
-    void onCancel();
-
-    /**
-     * invoked on dismiss event of ConfirmDialog.
-     * Will not invoked if ConfirmDialog is dismissed on dialog button actions.
-     */
-    void onDismiss();
   }
 
 }

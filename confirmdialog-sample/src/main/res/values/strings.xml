@@ -5,5 +5,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="show_dialog">Show Dialog</string>
+    <string name="show_custom_dialog">show custom view dialog</string>
 
 </resources>

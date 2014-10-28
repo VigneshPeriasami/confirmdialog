@@ -15,4 +15,12 @@
         android:layout_centerInParent="true"
         android:text="@string/show_dialog"/>
 
+    <Button
+        android:id="@+id/btn_show_custom_dialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_show_dialog"
+        android:layout_centerHorizontal="true"
+        android:text="@string/show_custom_dialog"/>
+
 </RelativeLayout>
