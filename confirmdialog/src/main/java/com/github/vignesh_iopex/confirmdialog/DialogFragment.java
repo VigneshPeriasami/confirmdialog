@@ -45,7 +45,7 @@ abstract class DialogFragment extends Fragment {
                            @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
 
-    View view = inflater.inflate(getDialogViewId(), null);
+    View view = inflater.inflate(getDialogViewId(), container, false);
     injectViews(view);
     injectListeners();
     constructViewElements();
