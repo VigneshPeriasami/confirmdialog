@@ -32,7 +32,7 @@ import static com.github.vignesh_iopex.confirmdialog.Confirm.getDialogRenderer;
 public class AppDgFragment extends Fragment {
   private DialogRenderer dialogRenderer;
 
-  @Nullable @Override public View onCreateView(
+  @Override public View onCreateView(
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     return inflater.inflate(dialogRenderer.getLayoutId(), container, false);
   }
