@@ -17,6 +17,7 @@
 package com.github.vignesh_iopex.confirmdialog;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -73,8 +74,12 @@ public class Confirm implements DialogEventListener {
       FragmentManager fragmentManager = ((ActionBarActivity) activity).getSupportFragmentManager();
       return new SupportDialogRenderer(fragmentManager, new DgFragment(),
           overlay, overlay.findViewById(R.id.overlay), parent, getViewBinder(R.layout.dialog_fragment));
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+      android.app.FragmentManager fragmentManager = activity.getFragmentManager();
+      return new AppDialogRenderer(fragmentManager, new AppDgFragment(), overlay,
+          overlay.findViewById(R.id.overlay), parent, getViewBinder(R.layout.dialog_fragment));
     } else {
-      return null;
+      throw new UnsupportedOperationException("Use ActionBarActivity for API below 11");
     }
   }
 

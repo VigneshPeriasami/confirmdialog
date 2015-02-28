@@ -16,6 +16,7 @@
  */
 package com.github.vignesh_iopex.confirmdialog;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -102,6 +103,7 @@ class DefaultViewBinder implements ViewBinder {
 
       if (askView != null) {
         dialogContent.removeAllViews();
+        Log.i(Confirm.TAG, "Ask view is not null");
         if (askView.getParent() != null) {
           ((ViewGroup) askView.getParent()).removeView(askView);
         }

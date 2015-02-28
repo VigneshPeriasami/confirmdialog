@@ -16,6 +16,7 @@
  */
 package com.github.vignesh_iopex.confirmdialog;
 
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -31,6 +32,12 @@ abstract class DialogRenderer {
     this.overlayTagHolder = overlayTagHolder;
     this.parent = parent;
     this.viewBinder = viewBinder;
+  }
+
+  protected Bundle getBundleArgs() {
+    Bundle args = new Bundle();
+    args.putInt(Confirm.CONFIRM_TAG_HOLDER, overlayTagHolder.getId());
+    return args;
   }
 
   public void render(int contentId) {
@@ -52,7 +59,8 @@ abstract class DialogRenderer {
   }
 
   public void dismissDialog() {
-    viewBinder.dismissView();
+    // viewBinder.dismissView();
+    overlay.setTag(null);
     parent.removeView(overlay);
   }
 }

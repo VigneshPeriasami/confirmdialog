@@ -16,30 +16,34 @@
  */
 package com.github.vignesh_iopex.confirmdialog;
 
+import android.annotation.TargetApi;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-class SupportDialogRenderer extends DialogRenderer {
+@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+class AppDialogRenderer extends DialogRenderer {
+  private FragmentManager fragmentManager;
   private Fragment fragment;
   private Fragment dummy;
-  private FragmentManager fragmentManager;
 
-  public SupportDialogRenderer(FragmentManager fragmentManager, Fragment fragment,
-                               View overlay, View overlayTagHolder, ViewGroup parent, ViewBinder viewBinder) {
+  public AppDialogRenderer(FragmentManager fragmentManager, Fragment fragment, View overlay,
+                           View overlayTagHolder, ViewGroup parent, ViewBinder viewBinder) {
     super(overlay, overlayTagHolder, parent, viewBinder);
     this.fragment = fragment;
-    this.dummy = new DummyFragment();
     this.fragmentManager = fragmentManager;
+    this.dummy = new AppDummyFragment();
   }
 
-  @Override public void render(final int contentId) {
+  @Override public void render(int contentId) {
     super.render(contentId);
+
     Bundle args = getBundleArgs();
     dummy.setArguments(args);
     fragment.setArguments(args);
@@ -61,12 +65,12 @@ class SupportDialogRenderer extends DialogRenderer {
 
   @Override public void dismissDialog() {
     fragmentManager.popBackStack();
-    // had to fix this hard coded delay for the custom animation.
+
     new Handler().postDelayed(new Runnable() {
       @Override public void run() {
         cleanFragmentManager();
-        SupportDialogRenderer.super.dismissDialog();
+        AppDialogRenderer.super.dismissDialog();
       }
-    }, 600);
+    }, 200);
   }
 }

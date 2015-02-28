@@ -16,6 +16,8 @@
  */
 package com.github.vignesh_iopex.confirmdialog;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
@@ -29,9 +31,19 @@ abstract class NullRenderer extends DialogRenderer {
   public static NullRenderer getNullRenderer(Object fragment) {
     if (fragment instanceof Fragment) {
       return new SupportNullRenderer((Fragment) fragment);
+    } else if (fragment instanceof android.app.Fragment) {
+      return new AppNullRenderer((android.app.Fragment) fragment);
     } else {
-      return null;
+      throw new UnsupportedOperationException("Unknown Fragment context " + fragment.getClass().getSimpleName());
     }
+  }
+
+  @Override public void bindView(View view) {
+    // do nothing.
+  }
+
+  @Override public int getLayoutId() {
+    return R.layout.dialog_fragment;
   }
 
   @Override public void dismissDialog() {
@@ -50,12 +62,19 @@ abstract class NullRenderer extends DialogRenderer {
       removeFragment();
     }
 
-    @Override public void bindView(View view) {
+    @Override public void removeFragment() {
+      Log.i(TAG, "Removing the fragment --- " + fragment.getClass().getSimpleName());
+      fragment.getFragmentManager().beginTransaction().remove(fragment).commit();
     }
+  }
 
-    @Override public int getLayoutId() {
+  @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+  public static class AppNullRenderer extends NullRenderer {
+    private android.app.Fragment fragment;
+
+    public AppNullRenderer(android.app.Fragment fragment) {
+      this.fragment = fragment;
       removeFragment();
-      return R.layout.dialog_fragment;
     }
 
     @Override public void removeFragment() {

@@ -18,7 +18,6 @@ package com.vikki.logs.dialog.confirmdialog.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,8 +72,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.btn_show_dialog:
-        Confirm.Builder cBuilder = Confirm.using(this);
-        cBuilder.ask("Can u see this now ?").onPositive("Yes", this)
+        Confirm.using(this).ask("Can u see this now ?").onPositive("Yes", this)
             .onNegative("No", this).build().show();
         break;
       case R.id.btn_show_custom_dialog:

@@ -26,6 +26,6 @@ interface ViewBinder {
   void dismissView();
 
   public interface ViewHolder {
-    public void construct();
+    void construct();
   }
 }
