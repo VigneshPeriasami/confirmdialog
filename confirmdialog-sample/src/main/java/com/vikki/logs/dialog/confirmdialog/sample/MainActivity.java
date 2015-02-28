@@ -18,6 +18,7 @@ package com.vikki.logs.dialog.confirmdialog.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.vignesh_iopex.confirmdialog.Confirm;
-import com.github.vignesh_iopex.confirmdialog.ConfirmDialog;
 import com.github.vignesh_iopex.confirmdialog.DialogEventListener;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener,
@@ -73,13 +73,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.btn_show_dialog:
-        /*ConfirmDialog.Builder builder = new ConfirmDialog.Builder(this);
-        builder.setContextText("Can you see confirmation dialog?")
-            .setConfirmButton("Yes", this).setCancelButton("No", this).setOnDismissListener(this)
-            .create().show();*/
         Confirm.Builder cBuilder = Confirm.using(this);
-        cBuilder.ask("Can u see this now ?").onConfirmListener(this)
-            .onCancelListener(this).build().show();
+        cBuilder.ask("Can u see this now ?").onPositive("Yes", this)
+            .onNegative("No", this).build().show();
         break;
       case R.id.btn_show_custom_dialog:
         TextView textView = new TextView(this);
@@ -87,8 +83,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         textView.setText("This is custom view dynamically built by the builder.");
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(25);
-        new ConfirmDialog.Builder(this).setContentView(textView).setConfirmButton("Ok", this)
-            .create().show();
+        Confirm.using(this).askView(textView).onPositive("Ok", this).build().show();
         break;
       default:
         throw new UnsupportedOperationException("Unsupported click event");
@@ -98,19 +93,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
   @Override
   public void onClick(DialogEventListener dialog, int which) {
     switch (which) {
-      case ConfirmDialog.POSITIVE_BUTTON:
+      case Confirm.POSITIVE_BUTTON:
         Toast.makeText(MainActivity.this, "Confirmed action", Toast.LENGTH_SHORT).show();
         break;
-      case ConfirmDialog.NEGATIVE_BUTTON:
+      case Confirm.NEGATIVE_BUTTON:
         Toast.makeText(MainActivity.this, "Cancelled Action", Toast.LENGTH_SHORT).show();
         break;
       default:
         throw new UnsupportedOperationException("Unknown event detected");
     }
-  }
-
-  @Override public String getBtnText() {
-    return "some";
   }
 
   @Override

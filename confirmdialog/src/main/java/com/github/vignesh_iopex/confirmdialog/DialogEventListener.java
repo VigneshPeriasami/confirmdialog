@@ -22,11 +22,11 @@ package com.github.vignesh_iopex.confirmdialog;
 public interface DialogEventListener {
   public interface OnClickListener {
     void onClick(DialogEventListener dialog, int which);
-    String getBtnText();
   }
 
   public interface OnDismissListener {
     void onDismiss(DialogEventListener dialog);
   }
+
   void dismiss();
 }

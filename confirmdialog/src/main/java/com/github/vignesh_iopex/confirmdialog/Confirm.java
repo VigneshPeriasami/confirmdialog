@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 Vignesh Periasami
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package com.github.vignesh_iopex.confirmdialog;
 
 import android.app.Activity;
@@ -8,12 +24,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import static com.github.vignesh_iopex.confirmdialog.NullRenderer.getNullRenderer;
 
 public class Confirm implements DialogEventListener {
+  final static String TAG = Confirm.class.getSimpleName();
   public final static int POSITIVE_BUTTON = 1;
   public final static int NEGATIVE_BUTTON = -1;
 
@@ -25,16 +39,22 @@ public class Confirm implements DialogEventListener {
   private OnClickListener onConfirm;
   private OnClickListener onCancel;
   private OnDismissListener onDismissListener;
+  private String positiveText;
+  private String negativeText;
+
   DialogRenderer dialogRenderer;
 
-  public Confirm(Activity activity, String confirmPhase, View askView, OnClickListener onConfirm,
-                 OnClickListener onCancel, OnDismissListener onDismissListener) {
+  public Confirm(Activity activity, String confirmPhase, View askView, String positiveText,
+                 String negativeText, OnClickListener onConfirm, OnClickListener onCancel,
+                 OnDismissListener onDismissListener) {
     this.activity = activity;
     this.confirmPhrase = confirmPhase;
     this.askView = askView;
     this.onDismissListener = onDismissListener;
     this.onConfirm = onConfirm;
     this.onCancel = onCancel;
+    this.positiveText = positiveText;
+    this.negativeText = negativeText;
   }
 
   public static Builder using(Activity activity) {
@@ -59,7 +79,8 @@ public class Confirm implements DialogEventListener {
   }
 
   ViewBinder getViewBinder(int layoutId) {
-    return new DefaultViewBinder(layoutId, confirmPhrase, askView, onConfirm, onCancel, this);
+    return new DefaultViewBinder(layoutId, confirmPhrase, askView, positiveText, negativeText,
+        onConfirm, onCancel, this);
   }
 
   @Override public void dismiss() {
@@ -70,6 +91,7 @@ public class Confirm implements DialogEventListener {
 
   /**
    * to be used to retrieve object from the view overlay tag.
+   *
    * @param activity
    * @return
    */
@@ -79,7 +101,7 @@ public class Confirm implements DialogEventListener {
     if (overlay != null) {
       return (DialogRenderer) overlay.getTag();
     }
-    Log.i("check", "overlay is null -- " + fragment.getClass().getSimpleName());
+    Log.i(TAG, "overlay is null -- " + fragment.getClass().getSimpleName());
     return getNullRenderer(fragment);
   }
 
@@ -88,7 +110,8 @@ public class Confirm implements DialogEventListener {
     private String confirmPhrase;
     private View askView;
     private OnDismissListener onDismissListener;
-    private List<OnClickListener> dialogActions = new LinkedList<>();
+    private String positiveText;
+    private String negativeText;
     private OnClickListener onConfirm;
     private OnClickListener onCancel;
 
@@ -106,12 +129,14 @@ public class Confirm implements DialogEventListener {
       return this;
     }
 
-    public Builder onConfirmListener(OnClickListener onClickListener) {
+    public Builder onPositive(String btnText, OnClickListener onClickListener) {
+      this.positiveText = btnText;
       this.onConfirm = onClickListener;
       return this;
     }
 
-    public Builder onCancelListener(OnClickListener onClickListener) {
+    public Builder onNegative(String btnText, OnClickListener onClickListener) {
+      this.negativeText = btnText;
       this.onCancel = onClickListener;
       return this;
     }
@@ -122,7 +147,8 @@ public class Confirm implements DialogEventListener {
     }
 
     public Confirm build() {
-      return new Confirm(activity, confirmPhrase, askView, onConfirm, onCancel, onDismissListener);
+      return new Confirm(activity, confirmPhrase, askView, positiveText, negativeText,
+          onConfirm, onCancel, onDismissListener);
     }
   }
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 Vignesh Periasami
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package com.github.vignesh_iopex.confirmdialog;
 
 import android.view.View;
@@ -7,25 +23,30 @@ import android.widget.TextView;
 
 import static com.github.vignesh_iopex.confirmdialog.DialogEventListener.OnClickListener;
 
-public class DefaultViewBinder implements ViewBinder {
+class DefaultViewBinder implements ViewBinder {
   private int layoutId;
   private String askPhrase;
   private View askView;
   private OnClickListener onConfirm;
   private OnClickListener onCancel;
   private DialogEventListener dialogEventListener;
+  private String positiveText;
+  private String negativeText;
 
-  public DefaultViewBinder(int layoutId, String askPhrase, View askView, OnClickListener onConfirm,
-                           OnClickListener onCancel, DialogEventListener dialogEventListener) {
+  public DefaultViewBinder(int layoutId, String askPhrase, View askView, String positiveText, String negativeText,
+                           OnClickListener onConfirm, OnClickListener onCancel,
+                           DialogEventListener dialogEventListener) {
     this.layoutId = layoutId;
     this.askPhrase = askPhrase;
     this.askView = askView;
     this.onConfirm = onConfirm;
     this.onCancel = onCancel;
     this.dialogEventListener = dialogEventListener;
+    this.positiveText = positiveText;
+    this.negativeText = negativeText;
   }
 
-   private ViewHolder getViewHolder(View contentView) {
+  private ViewHolder getViewHolder(View contentView) {
     return new DefaultViewHolder(contentView);
   }
 
@@ -36,6 +57,10 @@ public class DefaultViewBinder implements ViewBinder {
 
   @Override public int getLayoutId() {
     return layoutId;
+  }
+
+  @Override public void dismissView() {
+    dialogEventListener.dismiss();
   }
 
   public class DefaultViewHolder implements ViewHolder {
@@ -56,7 +81,7 @@ public class DefaultViewBinder implements ViewBinder {
     @Override public void construct() {
       if (onConfirm != null) {
         btnOnConfirm.setVisibility(View.VISIBLE);
-        btnOnConfirm.setText(onConfirm.getBtnText());
+        btnOnConfirm.setText(positiveText);
         btnOnConfirm.setOnClickListener(new View.OnClickListener() {
           @Override public void onClick(View v) {
             onConfirm.onClick(dialogEventListener, Confirm.POSITIVE_BUTTON);
@@ -66,7 +91,7 @@ public class DefaultViewBinder implements ViewBinder {
       }
       if (onCancel != null) {
         btnOnCancel.setVisibility(View.VISIBLE);
-        btnOnCancel.setText(onCancel.getBtnText());
+        btnOnCancel.setText(negativeText);
         btnOnCancel.setOnClickListener(new View.OnClickListener() {
           @Override public void onClick(View v) {
             onCancel.onClick(dialogEventListener, Confirm.NEGATIVE_BUTTON);
@@ -77,6 +102,9 @@ public class DefaultViewBinder implements ViewBinder {
 
       if (askView != null) {
         dialogContent.removeAllViews();
+        if (askView.getParent() != null) {
+          ((ViewGroup) askView.getParent()).removeView(askView);
+        }
         dialogContent.addView(askView);
       } else {
         tvAskPhrase.setText(askPhrase);
