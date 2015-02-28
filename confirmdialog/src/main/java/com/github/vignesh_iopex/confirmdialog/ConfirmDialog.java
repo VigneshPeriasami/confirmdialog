@@ -132,7 +132,7 @@ public final class ConfirmDialog extends DialogFragment implements DialogEventLi
   public void show() {
     LayoutInflater inflater = activity.getLayoutInflater();
     dialogHolderView = (ViewGroup) inflater.inflate(R.layout.confirm_overlay, null);
-    this.dialogOverlay = (ViewGroup) dialogHolderView.findViewById(R.id.confirm_overlay);
+    this.dialogOverlay = (ViewGroup) dialogHolderView.findViewById(R.id.overlay);
     this.dialogContentContainer = dialogHolderView.findViewById(R.id.dialog_content_holder);
     ViewGroup parent = (ViewGroup) activity.findViewById(android.R.id.content);
     parent.addView(dialogHolderView);

@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.vignesh_iopex.confirmdialog.Confirm;
 import com.github.vignesh_iopex.confirmdialog.ConfirmDialog;
 import com.github.vignesh_iopex.confirmdialog.DialogEventListener;
 
@@ -72,10 +73,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.btn_show_dialog:
-        ConfirmDialog.Builder builder = new ConfirmDialog.Builder(this);
+        /*ConfirmDialog.Builder builder = new ConfirmDialog.Builder(this);
         builder.setContextText("Can you see confirmation dialog?")
             .setConfirmButton("Yes", this).setCancelButton("No", this).setOnDismissListener(this)
-            .create().show();
+            .create().show();*/
+        Confirm.Builder cBuilder = Confirm.using(this);
+        cBuilder.ask("Can u see this now ?").onConfirmListener(this)
+            .onCancelListener(this).build().show();
         break;
       case R.id.btn_show_custom_dialog:
         TextView textView = new TextView(this);
@@ -103,6 +107,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
       default:
         throw new UnsupportedOperationException("Unknown event detected");
     }
+  }
+
+  @Override public String getBtnText() {
+    return "some";
   }
 
   @Override
