@@ -33,6 +33,7 @@ public class Confirm implements DialogEventListener {
   public final static int NEGATIVE_BUTTON = -1;
 
   static final String CONFIRM_TAG_HOLDER = "confirm_tag_holder";
+  static final int ANIMATION_TIMER = 300;
 
   private Activity activity;
   private String confirmPhrase;

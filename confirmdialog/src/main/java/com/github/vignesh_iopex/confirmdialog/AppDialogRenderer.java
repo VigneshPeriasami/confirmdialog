@@ -27,6 +27,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import static com.github.vignesh_iopex.confirmdialog.Confirm.ANIMATION_TIMER;
+
 @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 class AppDialogRenderer extends DialogRenderer {
   private FragmentManager fragmentManager;
@@ -72,6 +74,6 @@ class AppDialogRenderer extends DialogRenderer {
         cleanFragmentManager();
         AppDialogRenderer.super.dismissDialog();
       }
-    }, 200);
+    }, ANIMATION_TIMER);
   }
 }
