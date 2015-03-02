@@ -65,6 +65,7 @@ class AppDialogRenderer extends DialogRenderer {
 
   @Override public void dismissDialog() {
     fragmentManager.popBackStack();
+    viewBinder.dismissView();
 
     new Handler().postDelayed(new Runnable() {
       @Override public void run() {
