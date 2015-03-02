@@ -61,6 +61,7 @@ class SupportDialogRenderer extends DialogRenderer {
 
   @Override public void dismissDialog() {
     fragmentManager.popBackStack();
+    viewBinder.dismissView();
     // had to fix this hard coded delay for the custom animation.
     new Handler().postDelayed(new Runnable() {
       @Override public void run() {

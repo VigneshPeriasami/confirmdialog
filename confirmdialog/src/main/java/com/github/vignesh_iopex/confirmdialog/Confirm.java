@@ -85,13 +85,11 @@ public class Confirm implements DialogEventListener {
 
   ViewBinder getViewBinder(int layoutId) {
     return new DefaultViewBinder(layoutId, confirmPhrase, askView, positiveText, negativeText,
-        onConfirm, onCancel, this);
+        onConfirm, onCancel, onDismissListener, this);
   }
 
   @Override public void dismiss() {
     dialogRenderer.dismissDialog();
-    if (onDismissListener != null)
-      onDismissListener.onDismiss(this);
   }
 
   /**

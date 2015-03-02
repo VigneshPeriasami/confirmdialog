@@ -16,6 +16,8 @@
  */
 package com.vikki.logs.dialog.confirmdialog.sample;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
@@ -73,7 +75,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     switch (v.getId()) {
       case R.id.btn_show_dialog:
         Confirm.using(this).ask("Can u see this now ?").onPositive("Yes", this)
-            .onNegative("No", this).build().show();
+            .onNegative("No", this).onDismiss(this).build().show();
         break;
       case R.id.btn_show_custom_dialog:
         TextView textView = new TextView(this);
@@ -81,7 +83,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         textView.setText("This is custom view dynamically built by the builder.");
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(25);
-        Confirm.using(this).askView(textView).onPositive("Ok", this).build().show();
+        Confirm.using(this).askView(textView).onPositive("Ok", this).onDismiss(this).build().show();
         break;
       default:
         throw new UnsupportedOperationException("Unsupported click event");

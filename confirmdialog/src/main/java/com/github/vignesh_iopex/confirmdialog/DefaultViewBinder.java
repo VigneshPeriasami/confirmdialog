@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import static com.github.vignesh_iopex.confirmdialog.DialogEventListener.OnClickListener;
+import static com.github.vignesh_iopex.confirmdialog.DialogEventListener.OnDismissListener;
 
 class DefaultViewBinder implements ViewBinder {
   private int layoutId;
@@ -30,18 +31,20 @@ class DefaultViewBinder implements ViewBinder {
   private View askView;
   private OnClickListener onConfirm;
   private OnClickListener onCancel;
+  private OnDismissListener dismissListener;
   private DialogEventListener dialogEventListener;
   private String positiveText;
   private String negativeText;
 
   public DefaultViewBinder(int layoutId, String askPhrase, View askView, String positiveText, String negativeText,
                            OnClickListener onConfirm, OnClickListener onCancel,
-                           DialogEventListener dialogEventListener) {
+                           OnDismissListener onDismissListener, DialogEventListener dialogEventListener) {
     this.layoutId = layoutId;
     this.askPhrase = askPhrase;
     this.askView = askView;
     this.onConfirm = onConfirm;
     this.onCancel = onCancel;
+    this.dismissListener = onDismissListener;
     this.dialogEventListener = dialogEventListener;
     this.positiveText = positiveText;
     this.negativeText = negativeText;
@@ -61,7 +64,8 @@ class DefaultViewBinder implements ViewBinder {
   }
 
   @Override public void dismissView() {
-    dialogEventListener.dismiss();
+    if (dismissListener != null)
+      dismissListener.onDismiss(dialogEventListener);
   }
 
   public class DefaultViewHolder implements ViewHolder {
