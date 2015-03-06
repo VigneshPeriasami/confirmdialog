@@ -43,12 +43,13 @@ public class Confirm implements DialogEventListener {
   private OnDismissListener onDismissListener;
   private String positiveText;
   private String negativeText;
+  private AnimationResources animationResources;
 
   DialogRenderer dialogRenderer;
 
   public Confirm(Activity activity, String confirmPhase, View askView, String positiveText,
                  String negativeText, OnClickListener onConfirm, OnClickListener onCancel,
-                 OnDismissListener onDismissListener) {
+                 OnDismissListener onDismissListener, AnimationResources animationResources) {
     this.activity = activity;
     this.confirmPhrase = confirmPhase;
     this.askView = askView;
@@ -57,6 +58,7 @@ public class Confirm implements DialogEventListener {
     this.onCancel = onCancel;
     this.positiveText = positiveText;
     this.negativeText = negativeText;
+    this.animationResources = animationResources;
   }
 
   public static Builder using(Activity activity) {
@@ -71,14 +73,16 @@ public class Confirm implements DialogEventListener {
   DialogRenderer getDialogRenderer() {
     ViewGroup parent = (ViewGroup) activity.findViewById(android.R.id.content);
     View overlay = activity.getLayoutInflater().inflate(R.layout.confirm_overlay, parent, false);
+
     if (activity instanceof ActionBarActivity) {
       FragmentManager fragmentManager = ((ActionBarActivity) activity).getSupportFragmentManager();
       return new SupportDialogRenderer(fragmentManager, new DgFragment(),
-          overlay, overlay.findViewById(R.id.overlay), parent, getViewBinder(R.layout.dialog_fragment));
+          overlay, overlay.findViewById(R.id.overlay), parent,
+          getViewBinder(R.layout.dialog_fragment), animationResources);
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
       android.app.FragmentManager fragmentManager = activity.getFragmentManager();
       return new AppDialogRenderer(fragmentManager, new AppDgFragment(), overlay,
-          overlay.findViewById(R.id.overlay), parent, getViewBinder(R.layout.dialog_fragment));
+          overlay.findViewById(R.id.overlay), parent, getViewBinder(R.layout.dialog_fragment), animationResources);
     } else {
       throw new UnsupportedOperationException("Use ActionBarActivity for API below 11");
     }
@@ -118,6 +122,7 @@ public class Confirm implements DialogEventListener {
     private String negativeText;
     private OnClickListener onConfirm;
     private OnClickListener onCancel;
+    private AnimationResources animationResources;
 
     private Builder(Activity activity) {
       this.activity = activity;
@@ -150,9 +155,18 @@ public class Confirm implements DialogEventListener {
       return this;
     }
 
+    public Builder useAnimation(int enter, int exit, int animDelay) {
+      this.animationResources = new AnimationResources(enter, exit, animDelay);
+      return this;
+    }
+
     public Confirm build() {
+      if (animationResources == null) {
+        animationResources = new AnimationResources(R.anim.slide_from_bottom, R.anim.slide_to_bottom,
+            ANIMATION_TIMER);
+      }
       return new Confirm(activity, confirmPhrase, askView, positiveText, negativeText,
-          onConfirm, onCancel, onDismissListener);
+          onConfirm, onCancel, onDismissListener, animationResources);
     }
   }
 }

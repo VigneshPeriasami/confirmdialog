@@ -63,7 +63,7 @@ abstract class NullRenderer extends DialogRenderer {
     }
 
     @Override public void removeFragment() {
-      Log.i(TAG, "Removing the fragment --- " + fragment.getClass().getSimpleName());
+      Log.i(Confirm.TAG, "Removing the fragment --- " + fragment.getClass().getSimpleName());
       fragment.getFragmentManager().beginTransaction().remove(fragment).commit();
     }
   }
@@ -78,7 +78,7 @@ abstract class NullRenderer extends DialogRenderer {
     }
 
     @Override public void removeFragment() {
-      Log.i(TAG, "Removing the fragment --- " + fragment.getClass().getSimpleName());
+      Log.i(Confirm.TAG, "Removing the fragment --- " + fragment.getClass().getSimpleName());
       fragment.getFragmentManager().beginTransaction().remove(fragment).commit();
     }
   }

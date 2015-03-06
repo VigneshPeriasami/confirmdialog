@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 abstract class DialogRenderer {
-  public static final String TAG = DialogRenderer.class.getSimpleName();
   View overlay;
   private ViewGroup parent;
   protected ViewBinder viewBinder;

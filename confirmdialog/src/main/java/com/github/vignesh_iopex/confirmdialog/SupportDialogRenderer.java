@@ -31,13 +31,16 @@ class SupportDialogRenderer extends DialogRenderer {
   private Fragment fragment;
   private Fragment dummy;
   private FragmentManager fragmentManager;
+  private AnimationResources animationResources;
 
   public SupportDialogRenderer(FragmentManager fragmentManager, Fragment fragment,
-                               View overlay, View overlayTagHolder, ViewGroup parent, ViewBinder viewBinder) {
+                               View overlay, View overlayTagHolder, ViewGroup parent,
+                               ViewBinder viewBinder, AnimationResources animationResources) {
     super(overlay, overlayTagHolder, parent, viewBinder);
     this.fragment = fragment;
     this.dummy = new DummyFragment();
     this.fragmentManager = fragmentManager;
+    this.animationResources = animationResources;
   }
 
   @Override public void render(final int contentId) {
@@ -48,8 +51,7 @@ class SupportDialogRenderer extends DialogRenderer {
     fragmentManager.beginTransaction().add(contentId, dummy).commit();
 
     FragmentTransaction transaction = fragmentManager.beginTransaction();
-    transaction.setCustomAnimations(R.anim.slide_from_bottom, R.anim.slide_to_bottom,
-        R.anim.slide_to_bottom, R.anim.slide_to_bottom);
+    animationResources.applyAnimation(transaction);
     transaction.replace(contentId, fragment).addToBackStack(null).commit();
   }
 
@@ -70,6 +72,6 @@ class SupportDialogRenderer extends DialogRenderer {
         cleanFragmentManager();
         SupportDialogRenderer.super.dismissDialog();
       }
-    }, ANIMATION_TIMER);
+    }, animationResources.getAnimTime());
   }
 }

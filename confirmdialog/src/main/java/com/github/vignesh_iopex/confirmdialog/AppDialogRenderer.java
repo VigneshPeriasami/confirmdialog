@@ -34,13 +34,16 @@ class AppDialogRenderer extends DialogRenderer {
   private FragmentManager fragmentManager;
   private Fragment fragment;
   private Fragment dummy;
+  private AnimationResources animationResources;
 
   public AppDialogRenderer(FragmentManager fragmentManager, Fragment fragment, View overlay,
-                           View overlayTagHolder, ViewGroup parent, ViewBinder viewBinder) {
+                           View overlayTagHolder, ViewGroup parent,
+                           ViewBinder viewBinder, AnimationResources animationResources) {
     super(overlay, overlayTagHolder, parent, viewBinder);
     this.fragment = fragment;
     this.fragmentManager = fragmentManager;
     this.dummy = new AppDummyFragment();
+    this.animationResources = animationResources;
   }
 
   @Override public void render(int contentId) {
@@ -52,8 +55,7 @@ class AppDialogRenderer extends DialogRenderer {
     fragmentManager.beginTransaction().add(contentId, dummy).commit();
 
     FragmentTransaction transaction = fragmentManager.beginTransaction();
-    transaction.setCustomAnimations(R.anim.slide_from_bottom, R.anim.slide_to_bottom,
-        R.anim.slide_to_bottom, R.anim.slide_to_bottom);
+    animationResources.applyAnimation(transaction);
     transaction.replace(contentId, fragment).addToBackStack(null).commit();
   }
 
@@ -74,6 +76,6 @@ class AppDialogRenderer extends DialogRenderer {
         cleanFragmentManager();
         AppDialogRenderer.super.dismissDialog();
       }
-    }, ANIMATION_TIMER);
+    }, animationResources.getAnimTime());
   }
 }
