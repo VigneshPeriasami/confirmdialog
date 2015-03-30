@@ -5,6 +5,22 @@ A custom animated Android confirm dialog
 
 ![Confirm Dialog GIF](https://github.com/vignesh-iopex/confirmdialog/blob/master/demo.gif)
 
+Usage
+-----
+```java
+public class MainActivity extends Activity {
+  @Override protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    Confirm.using(this).ask("Fire missles?").onPositive("Yes", new DialogEventListener.OnClickListener() {
+                           @Override public void onClick(DialogEventListener dialog, int which) {
+                             launchMissles();
+                           }}).onNegative("No",  new DialogEventListener.OnClickListener() {
+                           @Override public void onClick(DialogEventListener dialog, int which) {
+                             sendFalseAlarm();
+                           }}).build().show();
+  }
+}
+```
 Download
 --------
 
@@ -13,12 +29,12 @@ Download via maven:
 <dependency>
     <groupId>com.github.vignesh-iopex</groupId>
     <artifactId>confirmdialog</artifactId>
-    <version>0.1.2</version>
+    <version>1.0</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'com.github.vignesh-iopex:confirmdialog:0.1.2'
+compile 'com.github.vignesh-iopex:confirmdialog:1.0'
 ```
 
 License
