@@ -16,6 +16,6 @@ ext {
 
 ext.libraries = [
         androidGradle: 'com.android.tools.build:gradle:1.1.0',
-        androidV7Support: 'com.android.support:appcompat-v7:21.+',
+        androidV7Support: 'com.android.support:appcompat-v7:21.0.0',
         junit: 'junit:junit:4.11'
 ]
