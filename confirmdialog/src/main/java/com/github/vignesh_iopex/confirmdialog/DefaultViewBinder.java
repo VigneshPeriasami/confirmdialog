@@ -55,6 +55,7 @@ class DefaultViewBinder implements ViewBinder {
   }
 
   @Override public void bindView(View view) {
+    view.setOnClickListener(null);
     ViewHolder viewHolder = getViewHolder(view);
     viewHolder.construct();
   }

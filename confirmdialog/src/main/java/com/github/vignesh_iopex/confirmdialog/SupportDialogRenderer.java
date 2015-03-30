@@ -25,8 +25,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import static com.github.vignesh_iopex.confirmdialog.Confirm.ANIMATION_TIMER;
-
 class SupportDialogRenderer extends DialogRenderer {
   private Fragment fragment;
   private Fragment dummy;

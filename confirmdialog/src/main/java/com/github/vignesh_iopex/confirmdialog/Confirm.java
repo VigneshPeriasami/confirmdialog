@@ -82,7 +82,8 @@ public class Confirm implements DialogEventListener {
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
       android.app.FragmentManager fragmentManager = activity.getFragmentManager();
       return new AppDialogRenderer(fragmentManager, new AppDgFragment(), overlay,
-          overlay.findViewById(R.id.overlay), parent, getViewBinder(R.layout.dialog_fragment), animationResources);
+          overlay.findViewById(R.id.overlay), parent, getViewBinder(R.layout.dialog_fragment),
+          animationResources);
     } else {
       throw new UnsupportedOperationException("Use ActionBarActivity for API below 11");
     }
