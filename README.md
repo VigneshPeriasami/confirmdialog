@@ -1,7 +1,8 @@
 confirmdialog
 =============
 
-A custom animated Android confirm dialog
+A custom animated Android confirm dialog 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-confirmdialog-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1907)
 
 ![Confirm Dialog GIF](https://github.com/vignesh-iopex/confirmdialog/blob/master/demo.gif)
 
