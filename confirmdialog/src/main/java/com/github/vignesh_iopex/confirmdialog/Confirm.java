@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,8 +74,8 @@ public class Confirm implements DialogEventListener {
     ViewGroup parent = (ViewGroup) activity.findViewById(android.R.id.content);
     View overlay = activity.getLayoutInflater().inflate(R.layout.confirm_overlay, parent, false);
 
-    if (activity instanceof ActionBarActivity) {
-      FragmentManager fragmentManager = ((ActionBarActivity) activity).getSupportFragmentManager();
+    if (activity instanceof AppCompatActivity) {
+      FragmentManager fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
       return new SupportDialogRenderer(fragmentManager, new DgFragment(),
           overlay, overlay.findViewById(R.id.overlay), parent,
           getViewBinder(R.layout.dialog_fragment), animationResources);

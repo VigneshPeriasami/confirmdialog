@@ -17,7 +17,7 @@
 package com.vikki.logs.dialog.confirmdialog.sample;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +29,7 @@ import android.widget.Toast;
 import com.github.vignesh_iopex.confirmdialog.Confirm;
 import com.github.vignesh_iopex.confirmdialog.DialogEventListener;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener,
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
     DialogEventListener.OnClickListener, DialogEventListener.OnDismissListener {
   private static final String TAG = MainActivity.class.getSimpleName();
   private Button btnShowDialog;
