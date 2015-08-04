@@ -16,8 +16,8 @@ android {
     defaultConfig {
         minSdkVersion parent.ext.minSdkVersion
         targetSdkVersion parent.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode parent.ext.versionCode
+        versionName parent.ext.versionName
     }
 
     buildTypes {
@@ -51,4 +51,4 @@ android.libraryVariants.all { variant ->
     project.tasks.getByName("check").dependsOn checkstyle
 }
 
-apply from: 'https://raw.githubusercontent.com/vignesh-iopex/gradle-mvn-push/master/gradle-mvn-push.gradle'
+apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
