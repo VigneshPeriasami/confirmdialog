@@ -156,6 +156,14 @@ public class Confirm implements DialogEventListener {
       return this;
     }
 
+    /**
+     * pass in the exact animation delay mentioned in the animator resources
+     *
+     * @param enter     fragment enter animation
+     * @param exit      fragment exit animation
+     * @param animDelay delay of animation configured in the anim resources
+     * @return
+     */
     public Builder useAnimation(int enter, int exit, int animDelay) {
       this.animationResources = new AnimationResources(enter, exit, animDelay);
       return this;
@@ -163,8 +171,13 @@ public class Confirm implements DialogEventListener {
 
     public Confirm build() {
       if (animationResources == null) {
-        animationResources = new AnimationResources(R.anim.slide_from_bottom, R.anim.slide_to_bottom,
-            ANIMATION_TIMER);
+        if (activity instanceof AppCompatActivity) {
+          animationResources = new AnimationResources(R.anim.slide_from_bottom,
+              R.anim.slide_to_bottom, ANIMATION_TIMER);
+        } else {
+          animationResources = new AnimationResources(R.anim.objanim_slide_from_bottom,
+              R.anim.objanim_slide_to_bottom, ANIMATION_TIMER);
+        }
       }
       return new Confirm(activity, confirmPhrase, askView, positiveText, negativeText,
           onConfirm, onCancel, onDismissListener, animationResources);
