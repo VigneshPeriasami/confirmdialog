@@ -30,12 +30,12 @@ Download via maven:
 <dependency>
     <groupId>com.github.vignesh-iopex</groupId>
     <artifactId>confirmdialog</artifactId>
-    <version>1.0.1</version>
+    <version>x.x.x</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'com.github.vignesh-iopex:confirmdialog:1.0.1'
+compile 'com.github.vignesh-iopex:confirmdialog:x.x.x'
 ```
 
 License
