@@ -1,44 +1,37 @@
 package com.github.vignesh_iopex.confirmdialog;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.PopupWindow;
 
-public class ConfirmWindow extends PopupWindow {
-  private final Context context;
-  private View confirmContent;
-  private Button btnPositive;
-  private Button btnNegative;
+class ConfirmWindow extends PopupWindow implements Dialog {
+  private static final int ANIM_DELAY = 500;
+  private final Activity activity;
+  private ConfirmView confirmContent;
 
-  public ConfirmWindow(Context context) {
-    this.context = context;
+  public ConfirmWindow(Activity activity) {
+    this.activity = activity;
     initDialog();
   }
 
   private void initDialog() {
-    confirmContent = LayoutInflater.from(context).inflate(R.layout.dialog_fragment, null);
-    btnPositive = (Button) confirmContent.findViewById(R.id.btn_confirm);
-    btnNegative = (Button) confirmContent.findViewById(R.id.btn_cancel);
-    btnNegative.setVisibility(View.VISIBLE);
-    btnPositive.setVisibility(View.VISIBLE);
-    btnPositive.setOnClickListener(new View.OnClickListener() {
+    confirmContent = new ConfirmView(activity);
+    confirmContent.onPositive(new View.OnClickListener() {
       @Override public void onClick(View view) {
-        dismiss();
+        dismissDialog();
       }
     });
-    btnNegative.setOnClickListener(new View.OnClickListener() {
+    confirmContent.onNegative(new View.OnClickListener() {
       @Override public void onClick(View view) {
-        dismiss();
+        dismissDialog();
       }
     });
 
@@ -51,7 +44,7 @@ public class ConfirmWindow extends PopupWindow {
     setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
   }
 
-  public void showPopWin(Activity activity) {
+  public void showDialog() {
     TranslateAnimation trans = new TranslateAnimation(
         Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF,
         0, Animation.RELATIVE_TO_SELF, 1,
@@ -59,9 +52,41 @@ public class ConfirmWindow extends PopupWindow {
 
     showAtLocation(activity.getWindow().getDecorView(), Gravity.BOTTOM,
         0, 0);
-    trans.setDuration(400);
-    trans.setInterpolator(new AccelerateDecelerateInterpolator());
+    trans.setDuration(ANIM_DELAY);
+    trans.setInterpolator(new LinearInterpolator());
 
     confirmContent.startAnimation(trans);
+  }
+
+  @Override public void dismissDialog() {
+    new Handler().postDelayed(new Runnable() {
+      @Override public void run() {
+
+        TranslateAnimation trans = new TranslateAnimation(
+            Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
+            Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1);
+
+        trans.setDuration(ANIM_DELAY);
+        trans.setInterpolator(new LinearInterpolator());
+        trans.setAnimationListener(new Animation.AnimationListener() {
+
+          @Override
+          public void onAnimationStart(Animation animation) {
+
+          }
+
+          @Override
+          public void onAnimationRepeat(Animation animation) {
+          }
+
+          @Override
+          public void onAnimationEnd(Animation animation) {
+            dismiss();
+          }
+        });
+
+        confirmContent.startAnimation(trans);
+      }
+    }, 300);
   }
 }

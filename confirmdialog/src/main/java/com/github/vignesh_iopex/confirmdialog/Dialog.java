@@ -19,14 +19,14 @@ package com.github.vignesh_iopex.confirmdialog;
 /**
  * Dialog events listener.
  */
-public interface DialogEventListener {
+public interface Dialog {
   public interface OnClickListener {
-    void onClick(DialogEventListener dialog, int which);
+    void onClick(Dialog dialog, int which);
   }
 
   public interface OnDismissListener {
-    void onDismiss(DialogEventListener dialog);
+    void onDismiss(Dialog dialog);
   }
 
-  void dismiss();
+  void dismissDialog();
 }

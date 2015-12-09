@@ -9,4 +9,8 @@
         <item name="@android:windowEnterAnimation">@anim/fadein</item>
         <item name="@android:windowExitAnimation">@anim/fadeout</item>
     </style>
+
+    <style name="ConfirmBtnPanel">
+        <item name="android:background">@null</item>
+    </style>
 </resources>

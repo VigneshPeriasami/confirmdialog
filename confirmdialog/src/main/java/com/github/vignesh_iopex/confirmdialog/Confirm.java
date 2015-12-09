@@ -19,8 +19,8 @@ package com.github.vignesh_iopex.confirmdialog;
 import android.app.Activity;
 import android.view.View;
 
-import com.github.vignesh_iopex.confirmdialog.DialogEventListener.OnClickListener;
-import com.github.vignesh_iopex.confirmdialog.DialogEventListener.OnDismissListener;
+import com.github.vignesh_iopex.confirmdialog.Dialog.OnClickListener;
+import com.github.vignesh_iopex.confirmdialog.Dialog.OnDismissListener;
 
 public class Confirm {
   private final Activity activity;
@@ -32,7 +32,7 @@ public class Confirm {
 
   public void show() {
     confirmWindow = new ConfirmWindow(activity);
-    confirmWindow.showPopWin(activity);
+    confirmWindow.showDialog();
   }
 
   public static Builder using(Activity activity) {

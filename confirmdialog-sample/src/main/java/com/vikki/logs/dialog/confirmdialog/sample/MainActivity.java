@@ -27,10 +27,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.vignesh_iopex.confirmdialog.Confirm;
-import com.github.vignesh_iopex.confirmdialog.DialogEventListener;
+import com.github.vignesh_iopex.confirmdialog.Dialog;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-    DialogEventListener.OnClickListener, DialogEventListener.OnDismissListener {
+    Dialog.OnClickListener, Dialog.OnDismissListener {
   private static final String TAG = MainActivity.class.getSimpleName();
   private Button btnShowDialog;
   private Button btnShowCustomDialog;
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   }
 
   @Override
-  public void onClick(DialogEventListener dialog, int which) {
+  public void onClick(Dialog dialog, int which) {
     /*switch (which) {
       case Confirm.POSITIVE_BUTTON:
         Toast.makeText(MainActivity.this, "Confirmed action", Toast.LENGTH_SHORT).show();
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   }
 
   @Override
-  public void onDismiss(DialogEventListener dialog) {
+  public void onDismiss(Dialog dialog) {
     Toast.makeText(MainActivity.this, "Dismissed", Toast.LENGTH_SHORT).show();
   }
 }
