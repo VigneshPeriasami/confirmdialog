@@ -11,21 +11,6 @@
         android:id="@+id/alert_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="30dp">
-
-            <TextView
-                android:id="@+id/txt_confirm"
-                style="@android:style/TextAppearance.Large"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/default_question"/>
-
-        </FrameLayout>
     </FrameLayout>
 
     <View
@@ -49,9 +34,9 @@
 
         <View
             android:layout_width="1dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:layout_height="fill_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:background="#D3D3D3"/>
 
         <Button

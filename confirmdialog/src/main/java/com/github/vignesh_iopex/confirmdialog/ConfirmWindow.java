@@ -11,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 class ConfirmWindow extends PopupWindow implements Dialog {
   private static final int ANIM_DELAY = 500;
@@ -23,7 +24,7 @@ class ConfirmWindow extends PopupWindow implements Dialog {
   }
 
   private void initDialog() {
-    confirmContent = new ConfirmView(activity);
+    confirmContent = new ConfirmView(activity, getDefaultConfirmContent());
     confirmContent.onPositive(new View.OnClickListener() {
       @Override public void onClick(View view) {
         dismissDialog();
@@ -88,5 +89,12 @@ class ConfirmWindow extends PopupWindow implements Dialog {
         confirmContent.startAnimation(trans);
       }
     }, 300);
+  }
+
+  private View getDefaultConfirmContent() {
+    TextView confirmText = new TextView(activity);
+    confirmText.setPadding(10, 100, 10, 100);
+    confirmText.setText(R.string.default_question);
+    return confirmText;
   }
 }
