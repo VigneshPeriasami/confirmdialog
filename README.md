@@ -1,7 +1,8 @@
 confirmdialog
 =============
 
-A custom animated Android confirm dialog 
+A custom animated Android confirm dialog
+
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-confirmdialog-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1907)
 
 ![Confirm Dialog GIF](https://github.com/vignesh-iopex/confirmdialog/blob/master/demo.gif)
@@ -30,12 +31,12 @@ Download via maven:
 <dependency>
     <groupId>com.github.vignesh-iopex</groupId>
     <artifactId>confirmdialog</artifactId>
-    <version>x.x.x</version>
+    <version>2.0-rc1</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'com.github.vignesh-iopex:confirmdialog:x.x.x'
+compile 'com.github.vignesh-iopex:confirmdialog:2.0-rc1'
 ```
 
 License
