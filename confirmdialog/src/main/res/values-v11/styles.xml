@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="ConfirmBtnPanel" parent="Widget.AppCompat.Button.Borderless">
-
+    <style name="ConfirmBtnPanel">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
 </resources>
