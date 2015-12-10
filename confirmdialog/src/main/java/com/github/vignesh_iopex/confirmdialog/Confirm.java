@@ -17,120 +17,66 @@
 package com.github.vignesh_iopex.confirmdialog;
 
 import android.app.Activity;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 
-import static com.github.vignesh_iopex.confirmdialog.NullRenderer.getNullRenderer;
+import static com.github.vignesh_iopex.confirmdialog.QuestionViewFactory.DEFAULT;
 
-public class Confirm implements DialogEventListener {
-  final static String TAG = Confirm.class.getSimpleName();
-  public final static int POSITIVE_BUTTON = 1;
-  public final static int NEGATIVE_BUTTON = -1;
+public class Confirm implements Dialog {
+  public static final int POSITIVE = 1;
+  public static final int NEGATIVE = -1;
+  private final Activity activity;
+  private final View questionView;
+  private final String positiveText;
+  private final String negativeText;
+  private final OnClickListener lstnPositive;
+  private final OnClickListener lstnNegative;
+  private final OnDismissListener dismissListener;
+  private ConfirmWindow confirmWindow;
 
-  static final String CONFIRM_TAG_HOLDER = "confirm_tag_holder";
-  static final int ANIMATION_TIMER = 300;
-
-  private Activity activity;
-  private String confirmPhrase;
-  private View askView;
-  private OnClickListener onConfirm;
-  private OnClickListener onCancel;
-  private OnDismissListener onDismissListener;
-  private String positiveText;
-  private String negativeText;
-  private AnimationResources animationResources;
-
-  DialogRenderer dialogRenderer;
-
-  public Confirm(Activity activity, String confirmPhase, View askView, String positiveText,
-                 String negativeText, OnClickListener onConfirm, OnClickListener onCancel,
-                 OnDismissListener onDismissListener, AnimationResources animationResources) {
+  public Confirm(Activity activity, View questionView,
+                 String positiveText, String negativeText,
+                 OnClickListener lstnPositive, OnClickListener lstnNegative,
+                 OnDismissListener dismissListener) {
     this.activity = activity;
-    this.confirmPhrase = confirmPhase;
-    this.askView = askView;
-    this.onDismissListener = onDismissListener;
-    this.onConfirm = onConfirm;
-    this.onCancel = onCancel;
+    this.questionView = questionView;
     this.positiveText = positiveText;
     this.negativeText = negativeText;
-    this.animationResources = animationResources;
+    this.lstnPositive = lstnPositive;
+    this.lstnNegative = lstnNegative;
+    this.dismissListener = dismissListener;
+  }
+
+  public Dialog show() {
+    ConfirmView confirmView = new ConfirmView(activity, this, questionView, positiveText,
+        negativeText, lstnPositive, lstnNegative);
+    confirmWindow = new ConfirmWindow(activity, this, confirmView, dismissListener);
+    confirmWindow.showDialog();
+    return this;
   }
 
   public static Builder using(Activity activity) {
     return new Builder(activity);
   }
 
-  public void show() {
-    dialogRenderer = getDialogRenderer();
-    dialogRenderer.render(R.id.dialog_content_holder);
-  }
-
-  DialogRenderer getDialogRenderer() {
-    ViewGroup parent = (ViewGroup) activity.findViewById(android.R.id.content);
-    View overlay = activity.getLayoutInflater().inflate(R.layout.confirm_overlay, parent, false);
-
-    if (activity instanceof AppCompatActivity) {
-      FragmentManager fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
-      return new SupportDialogRenderer(fragmentManager, new DgFragment(),
-          overlay, overlay.findViewById(R.id.overlay), parent,
-          getViewBinder(R.layout.dialog_fragment), animationResources);
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-      android.app.FragmentManager fragmentManager = activity.getFragmentManager();
-      return new AppDialogRenderer(fragmentManager, new AppDgFragment(), overlay,
-          overlay.findViewById(R.id.overlay), parent, getViewBinder(R.layout.dialog_fragment),
-          animationResources);
-    } else {
-      throw new UnsupportedOperationException("Use ActionBarActivity for API below 11");
-    }
-  }
-
-  ViewBinder getViewBinder(int layoutId) {
-    return new DefaultViewBinder(layoutId, confirmPhrase, askView, positiveText, negativeText,
-        onConfirm, onCancel, onDismissListener, this);
-  }
-
-  @Override public void dismiss() {
-    dialogRenderer.dismissDialog();
-  }
-
-  /**
-   * to be used to retrieve object from the view overlay tag.
-   *
-   * @param activity
-   * @return
-   */
-  static DialogRenderer getDialogRenderer(Activity activity, Bundle args, Object fragment) {
-    int overlayTagId = args.getInt(CONFIRM_TAG_HOLDER, -1);
-    View overlay = activity.findViewById(overlayTagId);
-    if (overlay != null) {
-      return (DialogRenderer) overlay.getTag();
-    }
-    Log.i(TAG, "overlay is null -- " + fragment.getClass().getSimpleName());
-    return getNullRenderer(fragment);
+  @Override public void dismissDialog() {
+    confirmWindow.dismissDialog();
   }
 
   public static class Builder {
     Activity activity;
-    private String confirmPhrase;
     private View askView;
     private OnDismissListener onDismissListener;
     private String positiveText;
     private String negativeText;
     private OnClickListener onConfirm;
     private OnClickListener onCancel;
-    private AnimationResources animationResources;
 
     private Builder(Activity activity) {
       this.activity = activity;
     }
 
     public Builder ask(String confirmPhrase) {
-      this.confirmPhrase = confirmPhrase;
+      this.askView = DEFAULT.getQuestionView(activity, confirmPhrase);
       return this;
     }
 
@@ -141,13 +87,13 @@ public class Confirm implements DialogEventListener {
 
     public Builder onPositive(String btnText, OnClickListener onClickListener) {
       this.positiveText = btnText;
-      this.onConfirm = onClickListener;
+      onConfirm = onClickListener;
       return this;
     }
 
     public Builder onNegative(String btnText, OnClickListener onClickListener) {
       this.negativeText = btnText;
-      this.onCancel = onClickListener;
+      onCancel = onClickListener;
       return this;
     }
 
@@ -156,31 +102,22 @@ public class Confirm implements DialogEventListener {
       return this;
     }
 
-    /**
-     * pass in the exact animation delay mentioned in the animator resources
-     *
-     * @param enter     fragment enter animation
-     * @param exit      fragment exit animation
-     * @param animDelay delay of animation configured in the anim resources
-     * @return
-     */
-    public Builder useAnimation(int enter, int exit, int animDelay) {
-      this.animationResources = new AnimationResources(enter, exit, animDelay);
-      return this;
+    private OnClickListener getNonNullListener(OnClickListener listener) {
+      if (listener != null)
+        return listener;
+      return OnClickListener.NONE;
+    }
+
+    private OnDismissListener getNonNullListener(OnDismissListener listener) {
+      if (listener != null)
+        return listener;
+      return OnDismissListener.NONE;
     }
 
     public Confirm build() {
-      if (animationResources == null) {
-        if (activity instanceof AppCompatActivity) {
-          animationResources = new AnimationResources(R.anim.slide_from_bottom,
-              R.anim.slide_to_bottom, ANIMATION_TIMER);
-        } else {
-          animationResources = new AnimationResources(R.anim.objanim_slide_from_bottom,
-              R.anim.objanim_slide_to_bottom, ANIMATION_TIMER);
-        }
-      }
-      return new Confirm(activity, confirmPhrase, askView, positiveText, negativeText,
-          onConfirm, onCancel, onDismissListener, animationResources);
+      return new Confirm(activity, askView, positiveText, negativeText,
+          getNonNullListener(onConfirm), getNonNullListener(onCancel),
+          getNonNullListener(onDismissListener));
     }
   }
 }

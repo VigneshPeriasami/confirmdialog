@@ -16,16 +16,29 @@
  */
 package com.github.vignesh_iopex.confirmdialog;
 
-import android.view.View;
+/**
+ * Dialog events listener.
+ */
+public interface Dialog {
+  interface OnClickListener {
+    void onClick(Dialog dialog, int which);
 
-interface ViewBinder {
-  void bindView(View view);
+    OnClickListener NONE = new OnClickListener() {
+      @Override public void onClick(Dialog dialog, int which) {
 
-  int getLayoutId();
-
-  void dismissView();
-
-  public interface ViewHolder {
-    void construct();
+      }
+    };
   }
+
+  interface OnDismissListener {
+    void onDismiss(Dialog dialog);
+
+    OnDismissListener NONE = new OnDismissListener() {
+      @Override public void onDismiss(Dialog dialog) {
+
+      }
+    };
+  }
+
+  void dismissDialog();
 }

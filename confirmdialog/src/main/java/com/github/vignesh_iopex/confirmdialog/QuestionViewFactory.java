@@ -16,17 +16,21 @@
  */
 package com.github.vignesh_iopex.confirmdialog;
 
-/**
- * Dialog events listener.
- */
-public interface DialogEventListener {
-  public interface OnClickListener {
-    void onClick(DialogEventListener dialog, int which);
-  }
+import android.content.Context;
+import android.view.View;
+import android.widget.TextView;
 
-  public interface OnDismissListener {
-    void onDismiss(DialogEventListener dialog);
-  }
+interface QuestionViewFactory {
+  View getQuestionView(Context context, String question);
 
-  void dismiss();
+  /** Presents with textview with additional padding */
+  QuestionViewFactory DEFAULT = new QuestionViewFactory() {
+    @Override public View getQuestionView(Context context, String question) {
+      TextView confirmText = new TextView(context);
+      confirmText.setTextSize(20);
+      confirmText.setPadding(10, 100, 10, 100);
+      confirmText.setText(question);
+      return confirmText;
+    }
+  };
 }
