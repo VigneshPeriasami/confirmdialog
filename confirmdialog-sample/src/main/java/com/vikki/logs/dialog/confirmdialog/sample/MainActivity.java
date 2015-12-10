@@ -90,16 +90,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   @Override
   public void onClick(Dialog dialog, int which) {
-    /*switch (which) {
-      case Confirm.POSITIVE_BUTTON:
+    switch (which) {
+      case Confirm.POSITIVE:
         Toast.makeText(MainActivity.this, "Confirmed action", Toast.LENGTH_SHORT).show();
         break;
-      case Confirm.NEGATIVE_BUTTON:
+      case Confirm.NEGATIVE:
         Toast.makeText(MainActivity.this, "Cancelled Action", Toast.LENGTH_SHORT).show();
         break;
       default:
         throw new UnsupportedOperationException("Unknown event detected");
-    }*/
+    }
   }
 
   @Override

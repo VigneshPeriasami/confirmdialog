@@ -12,11 +12,11 @@ Usage
 public class MainActivity extends Activity {
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Confirm.using(this).ask("Fire missles?").onPositive("Yes", new DialogEventListener.OnClickListener() {
-                           @Override public void onClick(DialogEventListener dialog, int which) {
+    Confirm.using(this).ask("Fire missles?").onPositive("Yes", new Dialog.OnClickListener() {
+                           @Override public void onClick(Dialog dialog, int which) {
                              launchMissles();
-                           }}).onNegative("No",  new DialogEventListener.OnClickListener() {
-                           @Override public void onClick(DialogEventListener dialog, int which) {
+                           }}).onNegative("No",  new Dialog.OnClickListener() {
+                           @Override public void onClick(Dialog dialog, int which) {
                              sendFalseAlarm();
                            }}).build().show();
   }

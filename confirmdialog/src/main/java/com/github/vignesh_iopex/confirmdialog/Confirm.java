@@ -19,29 +19,51 @@ package com.github.vignesh_iopex.confirmdialog;
 import android.app.Activity;
 import android.view.View;
 
-import com.github.vignesh_iopex.confirmdialog.Dialog.OnClickListener;
-import com.github.vignesh_iopex.confirmdialog.Dialog.OnDismissListener;
+import static com.github.vignesh_iopex.confirmdialog.QuestionViewFactory.DEFAULT;
 
-public class Confirm {
+public class Confirm implements Dialog {
+  public static final int POSITIVE = 1;
+  public static final int NEGATIVE = -1;
   private final Activity activity;
+  private final View questionView;
+  private final String positiveText;
+  private final String negativeText;
+  private final OnClickListener lstnPositive;
+  private final OnClickListener lstnNegative;
+  private final OnDismissListener dismissListener;
   private ConfirmWindow confirmWindow;
 
-  public Confirm(Activity activity) {
+  public Confirm(Activity activity, View questionView,
+                 String positiveText, String negativeText,
+                 OnClickListener lstnPositive, OnClickListener lstnNegative,
+                 OnDismissListener dismissListener) {
     this.activity = activity;
+    this.questionView = questionView;
+    this.positiveText = positiveText;
+    this.negativeText = negativeText;
+    this.lstnPositive = lstnPositive;
+    this.lstnNegative = lstnNegative;
+    this.dismissListener = dismissListener;
   }
 
-  public void show() {
-    confirmWindow = new ConfirmWindow(activity);
+  public Dialog show() {
+    ConfirmView confirmView = new ConfirmView(activity, this, questionView, positiveText,
+        negativeText, lstnPositive, lstnNegative);
+    confirmWindow = new ConfirmWindow(activity, this, confirmView, dismissListener);
     confirmWindow.showDialog();
+    return this;
   }
 
   public static Builder using(Activity activity) {
     return new Builder(activity);
   }
 
+  @Override public void dismissDialog() {
+    confirmWindow.dismissDialog();
+  }
+
   public static class Builder {
     Activity activity;
-    private String confirmPhrase;
     private View askView;
     private OnDismissListener onDismissListener;
     private String positiveText;
@@ -54,7 +76,7 @@ public class Confirm {
     }
 
     public Builder ask(String confirmPhrase) {
-      this.confirmPhrase = confirmPhrase;
+      this.askView = DEFAULT.getQuestionView(activity, confirmPhrase);
       return this;
     }
 
@@ -65,13 +87,13 @@ public class Confirm {
 
     public Builder onPositive(String btnText, OnClickListener onClickListener) {
       this.positiveText = btnText;
-      this.onConfirm = onClickListener;
+      onConfirm = onClickListener;
       return this;
     }
 
     public Builder onNegative(String btnText, OnClickListener onClickListener) {
       this.negativeText = btnText;
-      this.onCancel = onClickListener;
+      onCancel = onClickListener;
       return this;
     }
 
@@ -80,8 +102,22 @@ public class Confirm {
       return this;
     }
 
+    private OnClickListener getNonNullListener(OnClickListener listener) {
+      if (listener != null)
+        return listener;
+      return OnClickListener.NONE;
+    }
+
+    private OnDismissListener getNonNullListener(OnDismissListener listener) {
+      if (listener != null)
+        return listener;
+      return OnDismissListener.NONE;
+    }
+
     public Confirm build() {
-      return new Confirm(activity);
+      return new Confirm(activity, askView, positiveText, negativeText,
+          getNonNullListener(onConfirm), getNonNullListener(onCancel),
+          getNonNullListener(onDismissListener));
     }
   }
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 Vignesh Periasami
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package com.github.vignesh_iopex.confirmdialog;
 
 import android.app.Activity;
@@ -5,42 +21,35 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
-class ConfirmWindow extends PopupWindow implements Dialog {
+class ConfirmWindow extends PopupWindow implements PopupWindow.OnDismissListener {
   private static final int ANIM_DELAY = 500;
   private final Activity activity;
-  private ConfirmView confirmContent;
+  private final Dialog dialog;
+  private ConfirmView vwConfirm;
+  private final Dialog.OnDismissListener onDismissListener;
 
-  public ConfirmWindow(Activity activity) {
+  public ConfirmWindow(Activity activity, Dialog dialog, ConfirmView confirmView,
+                       Dialog.OnDismissListener onDismissListener) {
     this.activity = activity;
+    this.dialog = dialog;
+    this.vwConfirm = confirmView;
+    this.onDismissListener = onDismissListener;
     initDialog();
   }
 
   private void initDialog() {
-    confirmContent = new ConfirmView(activity, getDefaultConfirmContent());
-    confirmContent.onPositive(new View.OnClickListener() {
-      @Override public void onClick(View view) {
-        dismissDialog();
-      }
-    });
-    confirmContent.onNegative(new View.OnClickListener() {
-      @Override public void onClick(View view) {
-        dismissDialog();
-      }
-    });
-
     setTouchable(true);
     setFocusable(true);
     setBackgroundDrawable(new ColorDrawable(Color.parseColor("#80000000")));
+    setOnDismissListener(this);
     setAnimationStyle(R.style.FadeIn);
-    setContentView(confirmContent);
+    setContentView(vwConfirm);
     setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
     setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
   }
@@ -56,13 +65,12 @@ class ConfirmWindow extends PopupWindow implements Dialog {
     trans.setDuration(ANIM_DELAY);
     trans.setInterpolator(new LinearInterpolator());
 
-    confirmContent.startAnimation(trans);
+    vwConfirm.startAnimation(trans);
   }
 
-  @Override public void dismissDialog() {
+  public void dismissDialog() {
     new Handler().postDelayed(new Runnable() {
       @Override public void run() {
-
         TranslateAnimation trans = new TranslateAnimation(
             Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
             Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 1);
@@ -86,15 +94,12 @@ class ConfirmWindow extends PopupWindow implements Dialog {
           }
         });
 
-        confirmContent.startAnimation(trans);
+        vwConfirm.startAnimation(trans);
       }
     }, 300);
   }
 
-  private View getDefaultConfirmContent() {
-    TextView confirmText = new TextView(activity);
-    confirmText.setPadding(10, 100, 10, 100);
-    confirmText.setText(R.string.default_question);
-    return confirmText;
+  @Override public void onDismiss() {
+    onDismissListener.onDismiss(dialog);
   }
 }
