@@ -104,6 +104,6 @@ class ConfirmView extends RelativeLayout implements View.OnClickListener {
     } else if (view == btnNegative) {
       lstnNegative.onClick(dialog, NEGATIVE);
     }
-    dialog.dismissDialog();
+    dialog.dismiss();
   }
 }

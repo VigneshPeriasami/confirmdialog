@@ -27,14 +27,14 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.PopupWindow;
 
-class ConfirmWindow extends PopupWindow implements PopupWindow.OnDismissListener {
+class ConfirmWindow extends PopupWindow implements PopupWindow.OnDismissListener, WindowDelegate {
   private static final int ANIM_DELAY = 500;
   private final Activity activity;
-  private final Dialog dialog;
+  private final Confirm dialog;
   private ConfirmView vwConfirm;
   private final Dialog.OnDismissListener onDismissListener;
 
-  public ConfirmWindow(Activity activity, Dialog dialog, ConfirmView confirmView,
+  public ConfirmWindow(Activity activity, Confirm dialog, ConfirmView confirmView,
                        Dialog.OnDismissListener onDismissListener) {
     this.activity = activity;
     this.dialog = dialog;
@@ -54,7 +54,7 @@ class ConfirmWindow extends PopupWindow implements PopupWindow.OnDismissListener
     setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
   }
 
-  public void showDialog() {
+  @Override public void showDialog() {
     TranslateAnimation trans = new TranslateAnimation(
         Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF,
         0, Animation.RELATIVE_TO_SELF, 1,
@@ -68,7 +68,7 @@ class ConfirmWindow extends PopupWindow implements PopupWindow.OnDismissListener
     vwConfirm.startAnimation(trans);
   }
 
-  public void dismissDialog() {
+  @Override public void dismissDialog() {
     new Handler().postDelayed(new Runnable() {
       @Override public void run() {
         TranslateAnimation trans = new TranslateAnimation(
@@ -100,6 +100,7 @@ class ConfirmWindow extends PopupWindow implements PopupWindow.OnDismissListener
   }
 
   @Override public void onDismiss() {
+    dialog.cleanup();
     onDismissListener.onDismiss(dialog);
   }
 }

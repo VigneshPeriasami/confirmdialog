@@ -16,33 +16,24 @@
  */
 package com.github.vignesh_iopex.confirmdialog;
 
-/**
- * Dialog events listener.
- */
-public interface Dialog {
-  interface OnClickListener {
-    void onClick(Dialog dialog, int which);
-
-    OnClickListener NONE = new OnClickListener() {
-      @Override public void onClick(Dialog dialog, int which) {
-
-      }
-    };
-  }
-
-  interface OnDismissListener {
-    void onDismiss(Dialog dialog);
-
-    OnDismissListener NONE = new OnDismissListener() {
-      @Override public void onDismiss(Dialog dialog) {
-
-      }
-    };
-  }
+interface WindowDelegate {
+  void showDialog();
 
   boolean isShowing();
 
-  void show();
+  void dismissDialog();
 
-  void dismiss();
+  WindowDelegate NONE = new WindowDelegate() {
+    @Override public void showDialog() {
+
+    }
+
+    @Override public boolean isShowing() {
+      return false;
+    }
+
+    @Override public void dismissDialog() {
+
+    }
+  };
 }

@@ -24,41 +24,34 @@ import static com.github.vignesh_iopex.confirmdialog.QuestionViewFactory.DEFAULT
 public class Confirm implements Dialog {
   public static final int POSITIVE = 1;
   public static final int NEGATIVE = -1;
-  private final Activity activity;
-  private final View questionView;
-  private final String positiveText;
-  private final String negativeText;
-  private final OnClickListener lstnPositive;
-  private final OnClickListener lstnNegative;
-  private final OnDismissListener dismissListener;
-  private ConfirmWindow confirmWindow;
+  private WindowDelegate confirmWindow;
 
   public Confirm(Activity activity, View questionView,
                  String positiveText, String negativeText,
                  OnClickListener lstnPositive, OnClickListener lstnNegative,
                  OnDismissListener dismissListener) {
-    this.activity = activity;
-    this.questionView = questionView;
-    this.positiveText = positiveText;
-    this.negativeText = negativeText;
-    this.lstnPositive = lstnPositive;
-    this.lstnNegative = lstnNegative;
-    this.dismissListener = dismissListener;
-  }
-
-  public Dialog show() {
     ConfirmView confirmView = new ConfirmView(activity, this, questionView, positiveText,
         negativeText, lstnPositive, lstnNegative);
-    confirmWindow = new ConfirmWindow(activity, this, confirmView, dismissListener);
+    this.confirmWindow = new ConfirmWindow(activity, this, confirmView, dismissListener);
+  }
+
+  @Override public void show() {
     confirmWindow.showDialog();
-    return this;
+  }
+
+  @Override public boolean isShowing() {
+    return confirmWindow.isShowing();
+  }
+
+  void cleanup() {
+    confirmWindow = WindowDelegate.NONE;
   }
 
   public static Builder using(Activity activity) {
     return new Builder(activity);
   }
 
-  @Override public void dismissDialog() {
+  @Override public void dismiss() {
     confirmWindow.dismissDialog();
   }
 
@@ -114,7 +107,7 @@ public class Confirm implements Dialog {
       return OnDismissListener.NONE;
     }
 
-    public Confirm build() {
+    public Dialog build() {
       return new Confirm(activity, askView, positiveText, negativeText,
           getNonNullListener(onConfirm), getNonNullListener(onCancel),
           getNonNullListener(onDismissListener));
