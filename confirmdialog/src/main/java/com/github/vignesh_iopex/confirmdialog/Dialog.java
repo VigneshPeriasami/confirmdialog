@@ -16,9 +16,6 @@
  */
 package com.github.vignesh_iopex.confirmdialog;
 
-/**
- * Dialog events listener.
- */
 public interface Dialog {
   interface OnClickListener {
     void onClick(Dialog dialog, int which);
