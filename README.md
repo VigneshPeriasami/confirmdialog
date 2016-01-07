@@ -3,9 +3,18 @@ confirmdialog
 
 A custom animated Android confirm dialog
 
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-confirmdialog-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/1907)
+[![travis][travis-image]][travis-url] [![Android Arsenal][android-arsenal-img]][android-arsenal-link] [![maven-central][release-version]][maven-url]
 
-![Confirm Dialog GIF](https://github.com/vignesh-iopex/confirmdialog/blob/master/demo.gif)
+![Confirm Dialog GIF][demo-gif]
+
+[travis-image]: https://img.shields.io/travis/vignesh-iopex/confirmdialog.svg?style=flat
+[travis-url]: https://travis-ci.org/vignesh-iopex/confirmdialog
+[demo-gif]: https://raw.githubusercontent.com/vignesh-iopex/confirmdialog/master/demo.gif
+[android-arsenal-img]: https://img.shields.io/badge/Android%20Arsenal-confirmdialog-brightgreen.svg?style=flat
+[android-arsenal-link]: http://android-arsenal.com/details/1/1907
+[release-version]: https://img.shields.io/maven-central/v/com.github.vignesh-iopex/confirmdialog.svg?style=flat
+[maven-url]: http://repo1.maven.org/maven2/com/github/vignesh-iopex/confirmdialog/
+
 
 Usage
 -----
