@@ -7,9 +7,9 @@ A custom animated Android confirm dialog
 
 ![Confirm Dialog GIF][demo-gif]
 
-[travis-image]: https://img.shields.io/travis/vignesh-iopex/confirmdialog.svg?style=flat
-[travis-url]: https://travis-ci.org/vignesh-iopex/confirmdialog
-[demo-gif]: https://raw.githubusercontent.com/vignesh-iopex/confirmdialog/master/demo.gif
+[travis-image]: https://img.shields.io/travis/VigneshPeriasami/confirmdialog.svg?style=flat
+[travis-url]: https://travis-ci.org/VigneshPeriasami/confirmdialog
+[demo-gif]: https://raw.githubusercontent.com/VigneshPeriasami/confirmdialog/master/demo.gif
 [android-arsenal-img]: https://img.shields.io/badge/Android%20Arsenal-confirmdialog-brightgreen.svg?style=flat
 [android-arsenal-link]: http://android-arsenal.com/details/1/1907
 [release-version]: https://img.shields.io/maven-central/v/com.github.vignesh-iopex/confirmdialog.svg?style=flat
